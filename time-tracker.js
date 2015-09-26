@@ -55,7 +55,18 @@ if (Meteor.isClient) {
     }
   });
 
-  
+  Template.taskEvent.events({
+    'click': function() {
+      document.getElementById("editor").style.display = "block";
+    }
+  });
+
+  Template.editor.events({
+    'click #exit': function() {
+      // close the edit menu
+      document.getElementById("editor").style.display = "none";
+    }
+  });
 }
 
 if (Meteor.isServer) {

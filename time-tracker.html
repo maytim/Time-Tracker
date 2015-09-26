@@ -8,11 +8,7 @@
   {{> timer}}
 
   <div class="container">
-  	<div class="schedule-menu">
-  		<button id="prev">&lt;</button>
-  		<button id="current">Today</button>
-  		<button id="next">&gt;</button>
-  	</div>
+  	{{> scheduleMenu}}
 
 	<div class="time-ruler">
 		<div class="arrow-right" id="triangle-marker"></div>
@@ -44,27 +40,7 @@
 	</div>
 
 	  <div class="schedule">
-		  <div class="editor">
-	  		<div class="editor-window">
-	  			<div class="editor-content">
-	  			<button>X</button>
-	  				<table>
-	  					<tbody>
-	  						<tr>
-	  							<td>Task: </td>
-	  							<td><input type="text"/></td>
-	  						</tr>
-	  						<tr>
-	  							<td>Description: </td>
-	  							<td><input type="textarea"/></td>
-	  						</tr>
-
-	  					</tbody>
-	  				</table>
-	  			</div>
-	  			<div class="arrow-down editor-arrow"></div>
-	  		</div>
-	     </div>
+		{{> editor}}
 	  	<div class="schedule-interval odd"></div>
 	  	<div class="schedule-interval"></div>
 	  	<div class="schedule-interval odd"></div>
@@ -114,7 +90,7 @@
 	  	<div class="schedule-interval odd"></div>
 	  	<div class="schedule-interval final"></div>
 
-	  	<div class="schedule-item">Task</div>
+	  	{{> taskEvent}}
 	  </div>
 	</div>
 	<br/>
@@ -130,4 +106,39 @@
   <span>Stop time: {{stopTime}}</span>
   <br/>
   <span>Elapsed time (HH:MM:SS): {{elapsedTime}}</span>
+</template>
+
+<template name="taskEvent">
+	<div class="schedule-item">Task</div>
+</template>
+
+<template name="editor">
+	<div id="editor">
+	  	<div class="editor-window">
+	  		<div class="editor-content">
+	  			<button id="exit">X</button>
+	  			<table>
+		  			<tbody>
+		  				<tr>
+		  					<td>Task: </td>
+		  					<td><input type="text"/></td>
+		  				</tr>
+		  				<tr>
+		  					<td>Description: </td>
+		  					<td><input type="textarea"/></td>
+		  				</tr>
+		  			</tbody>
+		  		</table>
+	  		</div>
+	  		<div class="arrow-down editor-arrow"></div>
+		</div>
+	</div>
+</template>
+
+<template name="scheduleMenu">
+	<div class="schedule-menu">
+  		<button id="prev">&lt;</button>
+  		<button id="current">Today</button>
+  		<button id="next">&gt;</button>
+  	</div>
 </template>
