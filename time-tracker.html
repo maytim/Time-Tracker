@@ -1,0 +1,111 @@
+<head>
+  <title>time-tracker</title>
+</head>
+
+<body>
+  <h1>Time Tracker App</h1>
+
+  {{> timer}}
+
+  <div class="container">
+  	<div class="schedule-menu">
+  		<button id="prev">&lt;</button>
+  		<button id="current">Today</button>
+  		<button id="next">&gt;</button>
+  	</div>
+	<div class="time-ruler">
+		<div class="arrow-right" id="triangle-marker"></div>
+	  	<div class="time-ruler-current" id="line-marker"></div>
+	  	<div class="time-ruler-interval">12am</div>
+	  	<div class="time-ruler-interval">1am</div>
+	  	<div class="time-ruler-interval">2am</div>
+	  	<div class="time-ruler-interval">3am</div>
+	  	<div class="time-ruler-interval">4am</div>
+	  	<div class="time-ruler-interval">5am</div>
+	  	<div class="time-ruler-interval">6am</div>
+	  	<div class="time-ruler-interval">7am</div>
+	  	<div class="time-ruler-interval">8am</div>
+	  	<div class="time-ruler-interval">9am</div>
+	  	<div class="time-ruler-interval">10am</div>
+	  	<div class="time-ruler-interval">11am</div>
+	  	<div class="time-ruler-interval">12pm</div>
+	  	<div class="time-ruler-interval">1pm</div>
+	  	<div class="time-ruler-interval">2pm</div>
+	  	<div class="time-ruler-interval">3pm</div>
+	  	<div class="time-ruler-interval">4pm</div>
+	  	<div class="time-ruler-interval">5pm</div>
+	  	<div class="time-ruler-interval">6pm</div>
+	  	<div class="time-ruler-interval">7pm</div>
+	  	<div class="time-ruler-interval">8pm</div>
+	  	<div class="time-ruler-interval">9pm</div>
+	  	<div class="time-ruler-interval">10pm</div>
+	  	<div class="time-ruler-interval final">11pm</div>
+	</div>
+
+	  <div class="schedule">
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval"></div>
+	  	<div class="schedule-interval odd"></div>
+	  	<div class="schedule-interval final"></div>
+
+	  	<div class="schedule-item">Task</div>
+	  </div>
+	</div>
+	<br/>
+	<p style="clear:both; font-family:sans-serif; font-size:12px;">Created by Mr. Maytim</p>
+</body>
+
+<template name="timer">
+  <button id="start">Start</button>
+  <button id="stop">Stop</button>
+  <br/>
+  <span>Start time: {{startTime}}</span>
+  <br/>
+  <span>Stop time: {{stopTime}}</span>
+  <br/>
+  <span>Elapsed time (HH:MM:SS): {{elapsedTime}}</span>
+</template>

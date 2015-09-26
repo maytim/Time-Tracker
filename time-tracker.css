@@ -1,0 +1,114 @@
+/* CSS declarations go here */
+.container {
+	margin: 0;
+	padding: 0;
+	width: 342px; /* set a width of container to auto center the schedule-menu*/
+}
+
+.schedule-menu {
+	width: 100px;
+	margin: auto;
+	margin-bottom: 4px; /* create some clearance between menu and chart */
+	display: block;
+	clear: both;
+}
+
+.schedule-menu button {
+	border: 1px solid #EEEEEE;
+	background-color: #F5F5F5;
+	font-family: sans-serif;
+	font-size: 11px;
+	color: #757575;
+}
+
+.time-ruler {
+	width: 60px;
+	display: block;
+	clear: none;
+	float: left;
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+
+.time-ruler-interval {
+	height: 31px;
+	display: block;
+	width: inherit 100%;
+	text-align: right;
+	padding: 0 4px;
+	font-weight: normal;
+	font-size: 10px;
+	font-family: sans-serif;
+	opacity: 0.7;
+	border-top: 1px solid gray;
+	border-left: 1px solid gray;
+}
+
+.time-ruler-current {
+	position: absolute;
+	display: block;
+	overflow: hidden;
+	z-index: 1;
+	background-color: #F44336;
+	border-left: 1px solid #F44336; /* add 1px borders to left and right to cover schedule's borders*/
+	border-right: 1px solid #F44336;
+	height: 1px;
+	width: 340px; /* width of time-ruler and schedule*/
+	top: 0px;
+}
+
+.arrow-right {
+	width: 0;
+	height: 0;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+	border-left: 4px solid #F44336;
+	position: absolute;
+	z-index: 2;
+	top: -3px; /* to center you need to -3 from line position */
+}
+
+.schedule {
+	width: 280px;
+	display: block;
+	float: left;
+	clear: none;
+	position: relative;
+	padding: 0;
+	margin: 0;
+}
+
+.schedule-interval {
+	height: 15px;
+	width: 100%;
+	border-top: 1px dotted gray;
+	border-right: 1px solid gray;
+	border-left: 1px solid gray;
+	margin: 0;
+	padding: 0;
+	opacity: 0.7;
+}
+
+.schedule-interval.odd {
+	border-top: 1px solid gray;
+}
+
+.final{
+	border-bottom: 1px solid gray;
+}
+
+.schedule-item {
+	position: absolute;
+	background-color: #2196F3;
+	border: 1px solid #1976D2;
+	display: block;
+	width: 100%;
+	top: 32px;
+	left: 0px;
+	min-height: 15px;
+	height: 31px;
+	font-family: sans-serif;
+	color: #E3F2FD;
+	font-size: 11px;
+}
