@@ -99,8 +99,22 @@ if (Meteor.isClient) {
   });
 
   Template.taskEvent.events({
-    'click': function() {
-      document.getElementById("editor").style.display = "block";
+    'click': function(event) {
+      var editor = document.getElementById("editor");
+      var title = document.getElementById("editor-task-title");
+      var description = document.getElementById("editor-task-description");
+      var target = event.target;
+
+      //Adjust the top position of the edit window
+      //to zero out the window top = -46 (for event at 12am)
+      editor.style.top = (parseInt(target.style.top) - 46).toString() + "px";
+
+      //Change the text values of the Editor
+      title.value = this.title;
+      description.value = this.description;
+      
+      //display the edit window
+      editor.style.display = "block";
     }
   });
 
