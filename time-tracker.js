@@ -1,5 +1,7 @@
 var elapsedInt;
 
+Tasks = new Mongo.Collection("tasks");
+
 if (Meteor.isClient) {
   Meteor.setInterval(function() {
     //acquire current hours and minutes
@@ -20,6 +22,18 @@ if (Meteor.isClient) {
     //Change the location of the triangle
     document.getElementById("triangle-marker").style.top = (position-3).toString()+"px";
   }, 1000);
+
+  Template.body.helpers({
+    tasks: function() {
+      return Tasks.find({});
+    },
+    dataCount: function(data){
+      console.log(data.count());
+    },
+    test: function(){
+      console.log("test");
+    }
+  });
 
   Template.timer.helpers({
     startTime: function () {
@@ -52,6 +66,35 @@ if (Meteor.isClient) {
       Session.set('stopTime', new Date());
       Meteor.clearInterval(elapsedInt);
       Session.set('elapsedTime', CalculateElapsedTime(Session.get('startTime'), Session.get('stopTime')) );
+    }
+  });
+
+  Template.taskEvent.onCreated(function() {
+    console.log(this);
+    console.log(Tasks.find({}));
+  });
+
+  Template.taskEvent.helpers({
+    task: function() {
+      return Tasks.findOne();
+    },
+    tasks: function() {
+      return Tasks.find({});
+    },
+    topPosition: function(startTime) {
+      return "top: "+(Math.round( (startTime.getHours() * 32) + (startTime.getMinutes() * 32 / 60) ) ).toString() + "px;";
+    },
+    height: function(startTime, endTime) {
+      //difference in hours is just the change in hours
+      var diffHours = endTime.getHours() - startTime.getHours();
+      //total event difference in minutes include the diffHours and the change in the minute units
+      var diffMinutes = diffHours*60 + endTime.getMinutes() - startTime.getMinutes();
+      console.log(diffMinutes);
+      //the ratio is 31px per 1hr
+      return "height: "+ (Math.round(diffMinutes / 60 * 31)).toString() + "px;";
+    },
+    testOutput: function() {
+      console.log("input");
     }
   });
 
