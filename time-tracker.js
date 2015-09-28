@@ -1,4 +1,5 @@
 var elapsedInt;
+var currentDay = new Date();
 
 Tasks = new Mongo.Collection("tasks");
 
@@ -9,7 +10,17 @@ if (Meteor.isClient) {
     var hours = currentTime.getHours();
     var minutes = currentTime.getMinutes();
 
-    console.log(hours+": "+minutes);
+    //Cache line and tirangle markers
+    var line = document.getElementById("line-marker");
+    var triangle = document.getElementById("triangle-marker");
+
+    //hide markers if not displaying today
+    if(NotToday(currentTime, Session.get('currentDay'))) {
+      line.style.display = "none" 
+      triangle.style.display = "none";
+      console.log("don't display time marker.");
+      return;
+    }
 
     //compute the appropriate line to draw the marker
     //line is 16px per 30min interval
@@ -17,10 +28,14 @@ if (Meteor.isClient) {
     var position = Math.round( (hours * 32) + (minutes * 32 / 60) );
 
     //Change the location of the line
-    document.getElementById("line-marker").style.top = position.toString()+"px";
+    line.style.top = position.toString()+"px";
 
     //Change the location of the triangle
-    document.getElementById("triangle-marker").style.top = (position-3).toString()+"px";
+    triangle.style.top = (position-3).toString()+"px";
+
+    //Finally ensure that the markers are being displayed
+    line.style.display = "block" 
+    triangle.style.display = "block";
   }, 1000);
 
   Template.body.helpers({
@@ -79,7 +94,12 @@ if (Meteor.isClient) {
       return Tasks.findOne();
     },
     tasks: function() {
-      return Tasks.find({});
+      var key = Session.get('currentDay');
+      var minDate = new Date(key);
+      minDate.setHours(0,0,0,0);
+      var maxDate =  ChangeDay(minDate, 1);
+      console.log("Min Date: "+minDate+"\n Max Date: "+maxDate);
+      return Tasks.find({ startTime: {$gte: minDate, $lt: maxDate}});
     },
     topPosition: function(startTime) {
       return "top: "+(Math.round( (startTime.getHours() * 32) + (startTime.getMinutes() * 32 / 60) ) ).toString() + "px;";
@@ -89,7 +109,6 @@ if (Meteor.isClient) {
       var diffHours = endTime.getHours() - startTime.getHours();
       //total event difference in minutes include the diffHours and the change in the minute units
       var diffMinutes = diffHours*60 + endTime.getMinutes() - startTime.getMinutes();
-      console.log(diffMinutes);
       //the ratio is 31px per 1hr
       return "height: "+ (Math.round(diffMinutes / 60 * 31)).toString() + "px;";
     },
@@ -112,7 +131,7 @@ if (Meteor.isClient) {
       //Change the text values of the Editor
       title.value = this.title;
       description.value = this.description;
-      
+
       //display the edit window
       editor.style.display = "block";
     }
@@ -122,6 +141,28 @@ if (Meteor.isClient) {
     'click #exit': function() {
       // close the edit menu
       document.getElementById("editor").style.display = "none";
+    }
+  });
+
+  Template.scheduleMenu.helpers({
+    currentDay: function() {
+      return Session.get('currentDay').toDateString();
+    },
+  });
+
+  Template.scheduleMenu.onCreated(function() {
+    Session.set('currentDay', new Date());
+  });
+
+  Template.scheduleMenu.events({
+    'click #prev': function() {
+      Session.set('currentDay', ChangeDay(Session.get('currentDay'), -1));
+    },
+    'click #today': function() {
+      Session.set('currentDay', new Date());
+    },
+    'click #next': function() {
+      Session.set('currentDay', ChangeDay(Session.get('currentDay'), 1));
     }
   });
 }
@@ -154,4 +195,29 @@ CalculateElapsedTime = function(startTime, stopTime) {
   console.log(result);
 
   return result;
+};
+
+ChangeDay = function(date, amount) {
+  var tzOff = date.getTimezoneOffset() * 60 * 1000,
+      t = date.getTime(),
+      d = new Date(),
+      tzOff2;
+
+  t += (1000 * 60 * 60 * 24) * amount;
+  d.setTime(t);
+
+  tzOff2 = d.getTimezoneOffset() * 60 * 1000;
+  if (tzOff != tzOff2) {
+    var diff = tzOff2 - tzOff;
+    t += diff;
+    d.setTime(t);
+  }
+
+  return d;
+};
+
+NotToday = function(date1, date2){
+  return (date1.getDate() !== date2.getDate() ||
+       date1.getMonth() !== date2.getMonth() ||
+       date1.getYear() !== date2.getYear());
 }

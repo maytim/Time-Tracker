@@ -139,8 +139,12 @@
 
 <template name="scheduleMenu">
 	<div class="schedule-menu">
-  		<button id="prev">&lt;</button>
-  		<button id="current">Today</button>
-  		<button id="next">&gt;</button>
+		<span id="currentDay" style="text-align: center;">{{currentDay}}</span> <br/>
+		<!-- temporarily set margin-left 15px to center buttons because margin auto wasn't working correctly-->
+		<div style="margin-left: 15px;">
+	  		<button id="prev">&lt;</button>
+	  		<button id="today">Today</button>
+	  		<button id="next">&gt;</button>
+	  	</div>
   	</div>
 </template>
