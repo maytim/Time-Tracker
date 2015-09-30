@@ -1,12 +1,8 @@
 <head>
-  <title>time-tracker</title>
+  <title>Time Tracker</title>
 </head>
 
 <body>
-  <h1>Time Tracker App</h1>
-
-  {{> timer}}
-
   <div class="container">
   	{{> scheduleMenu}}
 
@@ -93,6 +89,32 @@
 	  	{{> taskEvent}}
 	  </div>
 	</div>
+
+	<div class="notification-panel">
+		<div id="clock" class="notification">Clock</div>
+		<div class="notification">
+			Duration
+			<br/>
+			00:00:00
+		</div>
+		<div class="notification">
+			{{> controls}}
+		</div>
+		<div class="notification">
+			{{> settings}}
+		</div>
+		<div class="notification">
+			Export
+			<br/>
+			<select>
+				<option>Sept</option>
+				<option>Oct</option>
+			</select>
+			<br/>
+			<button>Export</button>
+		</div>
+	</div>
+
 	<br/>
 	<p style="clear:both; font-family:sans-serif; font-size:12px;"> Created by Mr. Maytim</p>
 </body>
@@ -127,7 +149,7 @@
 		  				</tr>
 		  				<tr>
 		  					<td>Description: </td>
-		  					<td><input id="editor-task-description" type="textarea"/></td>
+		  					<td><textarea id="editor-task-description" style="rows: 3;"></textarea></td>
 		  				</tr>
 		  			</tbody>
 		  		</table>
@@ -147,4 +169,55 @@
 	  		<button id="next">&gt;</button>
 	  	</div>
   	</div>
+</template>
+
+<template name="controls">
+	Controls
+	<br/>
+	<select id="controls-select" name="company-selection">
+		{{#each clients}}
+			<option>{{name}}</option>
+		{{/each}}
+	</select>
+	<br/>
+	<button id="controls-start">Start</button>
+	<button id="controls-stop" disabled>Stop</button>
+</template>
+
+<template name="settings">
+	Settings
+	<br/>
+	
+	<table id="table-client" cellspacing="0">
+		<thead>
+			<tr>
+				<td>Client</td>
+				<td>Rate</td>
+				<td><button id="add-client" style="width:100%;">+</button></td>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each clients}}
+				<tr>
+					<th>{{name}}</th>
+					<td>${{rate}}</td>
+					<td><button style="width:100%;" onclick="deleteEntry(this)">-</button></td>
+				</tr>
+			{{/each}}
+		</tbody>
+	</table>
+
+	<div id="input-client" style="display:none;">		
+		<table>
+			<tr>
+				<td>Client</td>
+				<td><input id="input-client-name" type="text" placeholder="Enter client name." style="width:60px;"/></td>
+			</tr>
+			<tr>
+				<td>Rate</td>
+				<td><span>$<input id="input-client-rate" type="number" value="100.00" style="width:60px;" min="0.01" step="0.01"/></span></td>
+			</tr>
+		</table>
+		<button id="submit-client" style="width:94%; margin-bottom: 2px;" disabled="true">Ok</button>
+	</div>
 </template>

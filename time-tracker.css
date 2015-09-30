@@ -161,3 +161,40 @@
 	color: #E3F2FD;
 	font-size: 11px;
 }
+
+.notification-panel {
+	position: fixed;
+	right: 10px;
+	top: 30px;
+	min-height: 255px;
+	width: 170px;
+	border: 0px solid black;
+	overflow: hidden;
+}
+
+.notification {
+	border: 1px solid black;
+	min-height: 50px;
+	width: 150px;
+	margin: auto;
+	margin-top: 10px;
+	text-align: center;
+}
+
+th:first-child, td:first-child {
+	text-align: left;
+}
+
+th, td {
+	text-align: right;
+	padding: .5em 1em;
+}
+
+thead th {
+	border-bottom: 1px solid #ccc;
+	color: #888;
+}
+
+tbody th, td {
+	border-bottom: 1px solid #e6e6e6;
+}

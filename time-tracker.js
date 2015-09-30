@@ -3,6 +3,14 @@ var currentDay = new Date();
 
 Tasks = new Mongo.Collection("tasks");
 
+Clients = new Mongo.Collection("clients");
+
+Meteor.methods({
+  removeClient: function(entry) {
+    Clients.remove(entry);
+  }
+});
+
 if (Meteor.isClient) {
   Meteor.setInterval(function() {
     //acquire current hours and minutes
@@ -10,9 +18,13 @@ if (Meteor.isClient) {
     var hours = currentTime.getHours();
     var minutes = currentTime.getMinutes();
 
-    //Cache line and tirangle markers
+    //Cache line and triangle markers
     var line = document.getElementById("line-marker");
     var triangle = document.getElementById("triangle-marker");
+
+    //also update clock notification
+    var clock = document.getElementById("clock");
+    clock.innerHTML = currentTime.toTimeString();
 
     //hide markers if not displaying today
     if(NotToday(currentTime, Session.get('currentDay'))) {
@@ -37,7 +49,7 @@ if (Meteor.isClient) {
     line.style.display = "block" 
     triangle.style.display = "block";
   }, 1000);
-
+  
   Template.body.helpers({
     tasks: function() {
       return Tasks.find({});
@@ -165,6 +177,61 @@ if (Meteor.isClient) {
       Session.set('currentDay', ChangeDay(Session.get('currentDay'), 1));
     }
   });
+
+  Template.controls.helpers({
+    'clients': function() {
+      return Clients.find({},{sort: { name: 1}});
+    }
+  });
+
+  Template.controls.events({
+    'click #controls-start': function() {
+      document.getElementById("controls-stop").disabled = false;
+      document.getElementById("controls-start").disabled = true;
+      document.getElementById("controls-select").disabled = true;
+    },
+    'click #controls-stop': function() {
+      document.getElementById("controls-start").disabled = false;
+      document.getElementById("controls-select").disabled = false;
+      document.getElementById("controls-stop").disabled = true;
+    }
+  });
+
+  Template.settings.helpers({
+    'clients': function() {
+      return Clients.find({},{sort: { name: 1}});
+    }
+  });
+
+  Template.settings.events({
+    'keyup #input-client-name': function() {
+      var name = document.getElementById("input-client-name").value;
+      if(name.length > 0){
+        document.getElementById("submit-client").disabled = false;
+      } else {
+        document.getElementById("submit-client").disabled = true;
+      }
+    },
+    'click #add-client': function() {
+      document.getElementById("table-client").style.display = "none";
+      document.getElementById("input-client").style.display = "block";
+    },
+    'click #submit-client': function() {
+      //Collect the new inputs
+      var n = document.getElementById("input-client-name").value;
+      var r = document.getElementById("input-client-rate").value;
+
+      //Data cleaning
+      n = toTitleCase(n);
+
+      //Insert new client to the Client database
+      Clients.insert({ name: n, rate: r });
+
+      //Hide the form and reveal the table
+      document.getElementById("input-client").style.display = "none";
+      document.getElementById("table-client").style.display = "block";
+    }
+  });
 }
 
 if (Meteor.isServer) {
@@ -220,4 +287,14 @@ NotToday = function(date1, date2){
   return (date1.getDate() !== date2.getDate() ||
        date1.getMonth() !== date2.getMonth() ||
        date1.getYear() !== date2.getYear());
+}
+
+toTitleCase = function(str)
+{
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+deleteEntry = function(button) {
+  var name = button.parentNode.parentNode.children[0].innerHTML;
+  Meteor.call('removeClient', {name: name});
 }
