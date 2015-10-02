@@ -1,5 +1,4 @@
 var elapsedInt;
-var currentDay = new Date();
 
 Tasks = new Mongo.Collection("tasks");
 
@@ -62,43 +61,8 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.timer.helpers({
-    startTime: function () {
-      return Session.get('startTime');
-    },
-    stopTime: function () {
-      return Session.get('stopTime');
-    },
-    elapsedTime: function () {
-      return Session.get('elapsedTime');
-    }
-  });
-
-
-
-  Template.timer.events({
-    'click #start': function () {
-      // initialize new startTime and clear stop time
-      Session.set('startTime', new Date());
-      Session.set('stopTime', "");
-      Session.set('elapsedTime', "00:00:00");
-
-      //start elapsedTime update interval
-      elapsedInt = Meteor.setInterval(function() {
-        Session.set('elapsedTime', CalculateElapsedTime(Session.get('startTime'), new Date()) );
-      }, 1000);
-    },
-    'click #stop': function () {
-      // initialize new startTime
-      Session.set('stopTime', new Date());
-      Meteor.clearInterval(elapsedInt);
-      Session.set('elapsedTime', CalculateElapsedTime(Session.get('startTime'), Session.get('stopTime')) );
-    }
-  });
-
   Template.taskEvent.onCreated(function() {
-    console.log(this);
-    console.log(Tasks.find({}));
+    
   });
 
   Template.taskEvent.helpers({
@@ -110,8 +74,7 @@ if (Meteor.isClient) {
       var minDate = new Date(key);
       minDate.setHours(0,0,0,0);
       var maxDate =  ChangeDay(minDate, 1);
-      console.log("Min Date: "+minDate+"\n Max Date: "+maxDate);
-      return Tasks.find({ startTime: {$gte: minDate, $lt: maxDate}});
+      return Tasks.find({ start: {$gte: minDate, $lt: maxDate}});
     },
     topPosition: function(startTime) {
       return "top: "+(Math.round( (startTime.getHours() * 32) + (startTime.getMinutes() * 32 / 60) ) ).toString() + "px;";
@@ -186,14 +149,29 @@ if (Meteor.isClient) {
 
   Template.controls.events({
     'click #controls-start': function() {
-      document.getElementById("controls-stop").disabled = false;
-      document.getElementById("controls-start").disabled = true;
-      document.getElementById("controls-select").disabled = true;
+      //Set current client to active
+      var client = document.getElementById("controls-select").value;
+      Clients.update({_id: client}, {$set: {active: true}});
+      updateClientState(client);
+
+      //Create a new database entry
+      var clientID = document.getElementById("controls-select").value;
+      console.log("client: "+client);
+      var startTime = new Date();
+      console.log("start time: "+startTime.toTimeString());
+      var endTime = new Date(startTime.getTime() + 30 * 60000);
+      console.log("end time: "+endTime.toTimeString());
+      Tasks.insert({ client: clientID, start: startTime, end: endTime, title: '', description: ''});
     },
     'click #controls-stop': function() {
-      document.getElementById("controls-start").disabled = false;
-      document.getElementById("controls-select").disabled = false;
-      document.getElementById("controls-stop").disabled = true;
+      //Set current client to not active
+      var client = document.getElementById("controls-select").value;
+      Clients.update({_id: client}, {$set: {active: false}});
+      updateClientState(client);
+    },
+    'change #controls-select': function() {
+      var client = document.getElementById("controls-select").value;
+      updateClientState(client);
     }
   });
 
@@ -229,7 +207,7 @@ if (Meteor.isClient) {
       n = toTitleCase(n);
 
       //Insert new client to the Client database
-      Clients.insert({ name: n, rate: r });
+      Clients.insert({ name: n, rate: r, active: false });
 
       //Reset client form
       n.style = "placeholder: '';";
@@ -304,4 +282,17 @@ toTitleCase = function(str)
 deleteEntry = function(button) {
   var name = button.parentNode.parentNode.children[0].innerHTML;
   Meteor.call('removeClient', {name: name});
+}
+
+updateClientState = function(client) {
+  var query = Clients.findOne(client);
+  console.log(query.name + " is "+query.active);
+
+  if(query.active) {
+    document.getElementById("controls-start").disabled = true;
+    document.getElementById("controls-stop").disabled = false;
+  } else {
+    document.getElementById("controls-start").disabled = false;
+    document.getElementById("controls-stop").disabled = true;
+  }
 }

@@ -119,20 +119,9 @@
 	<p style="clear:both; font-family:sans-serif; font-size:12px;"> Created by Mr. Maytim</p>
 </body>
 
-<template name="timer">
-  <button id="start">Start</button>
-  <button id="stop">Stop</button>
-  <br/>
-  <span>Start time: {{startTime}}</span>
-  <br/>
-  <span>Stop time: {{stopTime}}</span>
-  <br/>
-  <span>Elapsed time (HH:MM:SS): {{elapsedTime}}</span>
-</template>
-
 <template name="taskEvent">
 	{{#each tasks}}
-		<div class="schedule-item" style={{topPosition startTime}}{{height startTime endTime}}>{{title}}</div>
+		<div class="schedule-item" style={{topPosition start}}{{height start end}}>{{title}}</div>
 	{{/each}}
 </template>
 
@@ -176,7 +165,7 @@
 	<br/>
 	<select id="controls-select" name="company-selection">
 		{{#each clients}}
-			<option>{{name}}</option>
+			<option value={{_id}}>{{name}}</option>
 		{{/each}}
 	</select>
 	<br/>
