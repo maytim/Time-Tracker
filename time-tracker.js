@@ -216,6 +216,10 @@ if (Meteor.isClient) {
       document.getElementById("table-client").style.display = "none";
       document.getElementById("input-client").style.display = "block";
     },
+    'click #cancel-client': function() {
+      document.getElementById("input-client").style.display = "none";
+      document.getElementById("table-client").style.display = "block";
+    },
     'click #submit-client': function() {
       //Collect the new inputs
       var n = document.getElementById("input-client-name").value;
@@ -226,6 +230,9 @@ if (Meteor.isClient) {
 
       //Insert new client to the Client database
       Clients.insert({ name: n, rate: r });
+
+      //Reset client form
+      n.style = "placeholder: '';";
 
       //Hide the form and reveal the table
       document.getElementById("input-client").style.display = "none";
