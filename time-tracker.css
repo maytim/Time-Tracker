@@ -174,11 +174,12 @@
 
 .notification {
 	border: 1px solid black;
-	min-height: 50px;
+	min-height: 20px;
 	width: 150px;
 	margin: auto;
 	margin-top: 10px;
 	text-align: center;
+	font-size: 11px;
 }
 
 table {
