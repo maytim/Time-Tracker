@@ -181,13 +181,18 @@
 	text-align: center;
 }
 
+table {
+	width: 100%;
+	padding: .5em;
+}
+
 th:first-child, td:first-child {
 	text-align: left;
 }
 
 th, td {
 	text-align: right;
-	padding: .5em 1em;
+	padding: 0;
 }
 
 thead th {

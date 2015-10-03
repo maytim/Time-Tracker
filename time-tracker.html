@@ -93,9 +93,7 @@
 	<div class="notification-panel">
 		<div id="clock" class="notification">Clock</div>
 		<div class="notification">
-			Duration
-			<br/>
-			00:00:00
+			{{> activeTasks}}
 		</div>
 		<div class="notification">
 			{{> controls}}
@@ -121,7 +119,7 @@
 
 <template name="taskEvent">
 	{{#each tasks}}
-		<div class="schedule-item" style={{topPosition start}}{{height start end}}>{{title}}</div>
+		<div class="schedule-item" style={{topPosition start}}{{height start end}}{{width}}{{left}}{{color}}>{{title}}</div>
 	{{/each}}
 </template>
 
@@ -174,9 +172,6 @@
 </template>
 
 <template name="settings">
-	Settings
-	<br/>
-	
 	<table id="table-client" cellspacing="0">
 		<thead>
 			<tr>
@@ -210,4 +205,18 @@
 		<button id="submit-client" style="width:47%; margin-bottom: 2px;" disabled="true">Ok</button>
 		<button id="cancel-client" style="width:47%; margin-bottom: 2px;">Cancel</button>
 	</div>
+</template>
+
+<template name="activeTasks">
+	Active Tasks
+	<br/>
+	<table>
+		<tbody>
+			{{#each clients}}
+				<tr>
+					<th>{{name}}</th>
+				</tr>
+			{{/each}}
+		</tbody>
+	</table>
 </template>

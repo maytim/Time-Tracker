@@ -1,3 +1,7 @@
+//Colors
+var blue = {text: "#E3F2FD", background: "#2196F3", border: "#1976D2"}; 
+var green = {text: "#E8F5E9", background: "#4CAF50", border: "#388E3C"};
+
 var elapsedInt;
 
 Tasks = new Mongo.Collection("tasks");
@@ -29,7 +33,6 @@ if (Meteor.isClient) {
     if(NotToday(currentTime, Session.get('currentDay'))) {
       line.style.display = "none" 
       triangle.style.display = "none";
-      console.log("don't display time marker.");
       return;
     }
 
@@ -62,7 +65,7 @@ if (Meteor.isClient) {
   });
 
   Template.taskEvent.onCreated(function() {
-    
+
   });
 
   Template.taskEvent.helpers({
@@ -70,11 +73,7 @@ if (Meteor.isClient) {
       return Tasks.findOne();
     },
     tasks: function() {
-      var key = Session.get('currentDay');
-      var minDate = new Date(key);
-      minDate.setHours(0,0,0,0);
-      var maxDate =  ChangeDay(minDate, 1);
-      return Tasks.find({ start: {$gte: minDate, $lt: maxDate}});
+      return CurrentTasks();
     },
     topPosition: function(startTime) {
       return "top: "+(Math.round( (startTime.getHours() * 32) + (startTime.getMinutes() * 32 / 60) ) ).toString() + "px;";
@@ -86,6 +85,41 @@ if (Meteor.isClient) {
       var diffMinutes = diffHours*60 + endTime.getMinutes() - startTime.getMinutes();
       //the ratio is 31px per 1hr
       return "height: "+ (Math.round(diffMinutes / 60 * 31)).toString() + "px;";
+    },
+    width: function() {
+      var activeClients = Clients.find({active: true}).count();
+      console.log("active clients: "+activeClients);
+
+      if(activeClients < 1) activeClients = 1;
+      var width = 100 / activeClients;
+      console.log("width: "+width);
+
+      //get today's events
+      var data = CurrentTasks().count();
+      console.log("Tasks: "+data);
+
+
+      return "width: "+width+"%;";
+    },
+    left: function() {
+      if(Clients.findOne({_id: this.client}).name === "Apple"){
+        return "left: 0%;";
+      }
+      if(Clients.findOne({_id: this.client}).name === "Google") {
+        return "left: 50%;";
+      }
+    },
+    color: function() {
+      if(Clients.findOne({_id: this.client}).name === "Apple"){
+        return "background-color:"+blue.background+";"+
+        "border: 1px solid "+blue.border+";"+
+        "color: "+blue.text+";";
+      }
+      if(Clients.findOne({_id: this.client}).name === "Google") {
+        return "background-color:"+green.background+";"+
+        "border: 1px solid "+green.border+";"+
+        "color: "+green.text+";";
+      }
     },
     testOutput: function() {
       console.log("input");
@@ -101,7 +135,7 @@ if (Meteor.isClient) {
 
       //Adjust the top position of the edit window
       //to zero out the window top = -46 (for event at 12am)
-      editor.style.top = (parseInt(target.style.top) - 46).toString() + "px";
+      editor.style.top = (parseInt(target.style.top) - 82).toString() + "px";
 
       //Change the text values of the Editor
       title.value = this.title;
@@ -176,7 +210,7 @@ if (Meteor.isClient) {
   });
 
   Template.settings.helpers({
-    'clients': function() {
+    clients: function() {
       return Clients.find({},{sort: { name: 1}});
     }
   });
@@ -215,6 +249,12 @@ if (Meteor.isClient) {
       //Hide the form and reveal the table
       document.getElementById("input-client").style.display = "none";
       document.getElementById("table-client").style.display = "block";
+    }
+  });
+  
+  Template.activeTasks.helpers({
+    clients: function() {
+      return Clients.find({active: true},{sort: { name: 1}});      
     }
   });
 }
@@ -295,4 +335,12 @@ updateClientState = function(client) {
     document.getElementById("controls-start").disabled = false;
     document.getElementById("controls-stop").disabled = true;
   }
+}
+
+CurrentTasks = function() {
+  var key = Session.get('currentDay');
+  var minDate = new Date(key);
+  minDate.setHours(0,0,0,0);
+  var maxDate =  ChangeDay(minDate, 1);
+  return Tasks.find({ start: {$gte: minDate, $lt: maxDate}});
 }
