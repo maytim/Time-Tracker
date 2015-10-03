@@ -28,7 +28,7 @@ if (Meteor.isClient) {
     //also update clock notification
     var clock = document.getElementById("clock");
     var hour2 = (hours<13) ? hours.toString() : (hours-12).toString();
-    clock.innerHTML = (hours<13) ? hours.toString() : (hours-12).toString()+":"+minutes.toString() + ((hours<13) ? " am":" pm");
+    clock.innerHTML = ((hours<13) ? hours.toString() : (hours-12).toString() )+":"+((minutes<10) ? ("0"+minutes.toString()): minutes.toString()) + ((hours<13) ? " am":" pm");
 
     //hide markers if not displaying today
     if(NotToday(currentTime, Session.get('currentDay'))) {
