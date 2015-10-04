@@ -66,7 +66,6 @@ if (Meteor.isClient) {
   });
 
   Template.taskEvent.onCreated(function() {
-
   });
 
   Template.taskEvent.helpers({
@@ -88,25 +87,23 @@ if (Meteor.isClient) {
       return "height: "+ (Math.round(diffMinutes / 60 * 31)).toString() + "px;";
     },
     width: function() {
-      var activeClients = Clients.find({active: true}).count();
-      console.log("active clients: "+activeClients);
+      //get today's count of different clients
+      var clientCount = CurrentClientCount(CurrentTasks());
+      console.log("Client count: "+clientCount);
 
-      if(activeClients < 1) activeClients = 1;
-      var width = 100 / activeClients;
-      console.log("width: "+width);
+      if(clientCount < 1) clientCount = 1;
+      var width = 100 / clientCount;
 
-      //get today's events
-      var data = CurrentTasks().count();
-      console.log("Tasks: "+data);
-
-
-      return "width: "+width+"%;";
+      return "width:"+width+"%;";
     },
     left: function() {
-      if(Clients.findOne({_id: this.client}).name === "Apple"){
+      var client = Clients.findOne({_id: this.client});
+      if(!client)
+        return;
+      if(client.name === "Apple"){
         return "left: 0%;";
       }
-      if(Clients.findOne({_id: this.client}).name === "Google") {
+      if(client.name === "Google") {
         return "left: 50%;";
       }
     },
@@ -344,4 +341,16 @@ CurrentTasks = function() {
   minDate.setHours(0,0,0,0);
   var maxDate =  ChangeDay(minDate, 1);
   return Tasks.find({ start: {$gte: minDate, $lt: maxDate}});
+}
+
+CurrentClientCount = function(tasks) {
+  var clients = new Array();
+
+  tasks.forEach(function(t) {
+    if(clients.indexOf(t.client) === -1) {
+      clients.push(t.client);
+    }
+  });
+
+  return clients.length;
 }
