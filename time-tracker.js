@@ -193,13 +193,38 @@ if (Meteor.isClient) {
       console.log("start time: "+startTime.toTimeString());
       var endTime = new Date(startTime.getTime() + 30 * 60000);
       console.log("end time: "+endTime.toTimeString());
-      Tasks.insert({ client: clientID, start: startTime, end: endTime, title: '', description: ''});
+
+      //Before adding a new entry check if there isn't an existing entry
+      //Check for appropriate client
+      //Check that the start time is less than the startTime
+      //Check for a finish time greater than or equal to the startTime
+      var conflict = Tasks.find({ client: clientID, start: {$lt: startTime}, end: {$gte: startTime}});
+      console.log("Conflicting Tasks Count: "+conflict.count());
+
+      //Add the new entry
+      if(conflict.count() === 0) {
+        Tasks.insert({ client: clientID, start: startTime, end: endTime, title: '', description: ''});
+        console.log("Adding new entry.");
+      }
     },
     'click #controls-stop': function() {
       //Set current client to not active
       var client = document.getElementById("controls-select").value;
       Clients.update({_id: client}, {$set: {active: false}});
       updateClientState(client);
+
+      //Check if the time exceeds the minimum to update the endTime
+      //To find the current task for the particular client you need to filter for today's tasks with
+      //the client and then sort them by start time and pick the last one
+      var minDate = new Date();
+      minDate.setHours(0,0,0,0);
+      var maxDate =  ChangeDay(minDate, 1);
+      var currentTask = Tasks.findOne({ client: client, start: {$gte: minDate, $lt: maxDate}}, {sort: {start: -1}});
+      var now = new Date();
+      if(now > currentTask.end) {
+        Tasks.update({_id: currentTask._id}, {$set: {end: now}});
+        console.log("Updating the date of the task being stopped.");
+      }
     },
     'change #controls-select': function() {
       var client = document.getElementById("controls-select").value;

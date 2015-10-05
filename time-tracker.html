@@ -161,12 +161,13 @@
 	Controls
 	<br/>
 	<select id="controls-select" name="company-selection">
+		<option id="controls-select-default" value disabled selected style="display:none;"> --- </option>
 		{{#each clients}}
 			<option value={{_id}}>{{name}}</option>
 		{{/each}}
 	</select>
 	<br/>
-	<button id="controls-start">Start</button>
+	<button id="controls-start" disabled>Start</button>
 	<button id="controls-stop" disabled>Stop</button>
 </template>
 
